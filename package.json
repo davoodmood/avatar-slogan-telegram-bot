@@ -4,7 +4,8 @@
   "description": "A telegram bot that sends back your profile image with an added slogan on top of it. Showing that the user is supporting a campaign.",
   "main": "app.js",
   "scripts": {
-    "test": "npm run test"
+    "dev": "ts-node ./src/app.ts",
+    "start": "ts-node ./src/app.ts"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
   },
   "homepage": "https://github.com/davoodmood/avatar-slogan-telegram-bot#readme",
   "dependencies": {
+    "axios": "^0.21.1",
     "dotenv": "^10.0.0",
     "node-telegram-bot-api": "^0.54.0"
   },
