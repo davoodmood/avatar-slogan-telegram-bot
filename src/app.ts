@@ -18,15 +18,25 @@ async function processImage(msg: TelegramBot.Message): Promise<void> {
         case process.env.BANNER_LEFT:
             bannerPosition = 'left-bottom'
             break;
+        case process.env.CIRCLE_WHITE:
+            bannerPosition = 'circle-white'
+            break;
+        case process.env.CIRCLE_RED:
+            bannerPosition = 'circle-red'
+            break;
+        case process.env.CIRCLE_YELLOW:
+            bannerPosition = 'circle-yellow'
+            break;
         default:
             bannerPosition = 'center-bottom'
             break;
     }
     bot.getUserProfilePhotos(msg.from?.id!).then(res => {
+        bot.sendMessage(msg.chat.id,`${process.env.LOADING_TEXT}`);
         res.photos.forEach((sizes: any): void => {
             for(let index = 0; index < sizes.length; index++) {
                 if(index !== 2) continue
-                const fileName= `${sizes[index].file_unique_id}-${parseInt((new Date('2012.08.10').getTime() / 1000).toFixed(0))}`
+                const fileName= `${sizes[index].file_unique_id}-${parseInt((new Date().getTime() / 1000).toFixed(0))}`
                 axios.get(`https://api.telegram.org/bot${token}/getFile?file_id=${sizes[index].file_id}`)
                 .then(res => { 
                     axios({
@@ -40,7 +50,7 @@ async function processImage(msg: TelegramBot.Message): Promise<void> {
                                 if(err) {
                                     console.log(err);
                                 } else {
-                                    Jimp.read(`${__dirname}/overlays/${bannerPosition}.png`, (err, sec_img) => {
+                                    Jimp.read(`${__dirname}/../assets/overlays/${bannerPosition}.png`, (err, sec_img) => {
                                         if(err) {
                                             console.log(err);
                                         } else {
@@ -84,7 +94,8 @@ bot.on('message', (msg) => {
 bot.onText(/\/start/, (msg) => {
     bot.sendMessage(msg.chat.id, `${process.env.WELCOME_MSG}`, {
         "reply_markup": {
-            "keyboard": [[                
+            "keyboard": [
+            [                
                 {
                     text: `${process.env.BANNER_LEFT}`
                 },
@@ -94,12 +105,24 @@ bot.onText(/\/start/, (msg) => {
                 {
                     text: `${process.env.BANNER_RIGHT}`
                 },
+            ],
+            [                
+                {
+                    text: `${process.env.CIRCLE_WHITE}`
+                },
+                {
+                    text: `${process.env.CIRCLE_RED}`
+                },
+                {
+                    text: `${process.env.CIRCLE_YELLOW}`
+                },
             ]
         ]}
     });
     
 });
 
+// Adding commands
 bot.onText(/\/sendprofileimage/, (msg) => {
     msg.text = `${process.env.BUTTON_CALL_TO_ACTION}`;
     processImage(msg);
